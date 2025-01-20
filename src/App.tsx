@@ -28,11 +28,11 @@ export const App = () => {
 
   return (
     <div className='flex h-full w-full flex-col items-start justify-start'>
-      <div className='flex h-max w-full items-center justify-start gap-2 border-b border-border py-4'>
+      <div className='flex h-max w-full items-center justify-start gap-2 border-b border-border p-4'>
         {Object.keys(viewStates).map((state, index) => (
           <Button
             key={`viewStateLink-${index}`}
-            variant={viewState === state ? 'default' : 'link'}
+            variant={viewState === state ? 'default' : 'outline'}
             className='capitalize'
             onClick={() => changeViewState(state as ViewState)}
           >
