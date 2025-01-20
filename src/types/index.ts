@@ -1,6 +1,6 @@
 export type ViewState =
-  | 'retention'
-  | 'platform'
-  | 'dailyUsage'
+  | 'consecutive'
   | 'country'
-  | 'consecutively';
+  | 'dailyUsage'
+  | 'platform'
+  | 'retention';

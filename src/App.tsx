@@ -6,12 +6,41 @@
 // - Daily usage statistics => Calendar
 // - Country statistics => Tree Map
 
-export const App = () => (
-  <div>
-    {[1, 1, 1, 1, 1, 1, 1].map((section, index) => (
-      <div key={`section-${index}`} className='h-[500px]'>
-        section {section} {index}
+import { ViewState } from '@/types';
+import { useViewStateStore } from '@/store/use-view-state-store';
+import { Consecutive } from '@/components/view-states/consecutive';
+import { Country } from '@/components/view-states/country';
+import { DailyUsage } from '@/components/view-states/daily-usage';
+import { Platform } from '@/components/view-states/platform';
+import { Retention } from '@/components/view-states/retention';
+import { Button } from '@/components/ui/button';
+
+export const App = () => {
+  const { viewState, changeViewState } = useViewStateStore();
+
+  const viewStates = {
+    consecutive: <Consecutive />,
+    country: <Country />,
+    dailyUsage: <DailyUsage />,
+    platform: <Platform />,
+    retention: <Retention />
+  };
+
+  return (
+    <div className='flex h-full w-full flex-col items-start justify-start'>
+      <div className='flex h-max w-full items-center justify-start gap-6 border-b border-border p-4'>
+        {Object.keys(viewStates).map((state, index) => (
+          <Button
+            key={`viewStateLink-${index}`}
+            variant='link'
+            className='px-0 capitalize'
+            onClick={() => changeViewState(state as ViewState)}
+          >
+            {state.replace(/([A-Z])/g, ' $1').trim()}
+          </Button>
+        ))}
       </div>
-    ))}
-  </div>
-);
+      {viewStates[viewState]}
+    </div>
+  );
+};
