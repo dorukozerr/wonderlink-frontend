@@ -1,3 +1,8 @@
+import { ThemeToggle } from '@/components/theme-toggle';
+
 export const App = () => (
-  <h1 className='text-5xl font-bold'>Wonderlink Frontend</h1>
+  <div>
+    <ThemeToggle />
+    <h1 className='mono text-5xl font-bold'>Wonderlink Frontend</h1>
+  </div>
 );
