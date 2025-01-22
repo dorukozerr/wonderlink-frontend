@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { addDays, format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import { DateRange } from 'react-day-picker';
 
-import { cn } from '@/lib/utils';
 import { platforms, countries } from '@/lib/constants';
+import { cn } from '@/lib/utils';
+import { useFilterStore } from '@/store/use-filter-store';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,12 +18,7 @@ import {
 } from '@/components/ui/popover';
 
 export const FilterRow = () => {
-  const [selectedPlatform, setSelectedPlatform] = useState<string[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20)
-  });
+  const { filters, setFilters } = useFilterStore();
 
   return (
     <div className='flex h-max w-full items-center justify-end gap-2 border-b border-border p-4'>
@@ -36,18 +29,18 @@ export const FilterRow = () => {
             variant={'outline'}
             className={cn(
               'w-[300px] justify-start text-left font-normal',
-              !date && 'text-muted-foreground'
+              !filters.date.from && 'text-muted-foreground'
             )}
           >
             <CalendarIcon />
-            {date?.from ? (
-              date.to ? (
+            {filters.date.from ? (
+              filters.date.to ? (
                 <>
-                  {format(date.from, 'LLL dd, y')} -{' '}
-                  {format(date.to, 'LLL dd, y')}
+                  {new Date(filters.date.from).toLocaleDateString()} -{' '}
+                  {new Date(filters.date.to).toLocaleDateString()}
                 </>
               ) : (
-                format(date.from, 'LLL dd, y')
+                new Date(filters.date.from).toLocaleDateString()
               )
             ) : (
               <span>Pick a date</span>
@@ -58,9 +51,38 @@ export const FilterRow = () => {
           <Calendar
             initialFocus
             mode='range'
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
+            defaultMonth={new Date()}
+            selected={
+              filters.date.from
+                ? filters.date.to
+                  ? {
+                      from: new Date(filters.date.from),
+                      to: new Date(filters.date.to)
+                    }
+                  : { from: new Date(filters.date.from), to: undefined }
+                : undefined
+            }
+            onSelect={(newRange) =>
+              newRange
+                ? newRange.from
+                  ? newRange.to
+                    ? setFilters('date', {
+                        from: newRange.from.toISOString(),
+                        to: newRange.to.toISOString()
+                      })
+                    : setFilters('date', {
+                        from: newRange.from.toISOString(),
+                        to: undefined
+                      })
+                  : setFilters('date', {
+                      from: undefined,
+                      to: undefined
+                    })
+                : setFilters('date', {
+                    from: undefined,
+                    to: undefined
+                  })
+            }
             numberOfMonths={2}
           />
         </PopoverContent>
@@ -69,23 +91,22 @@ export const FilterRow = () => {
         <DropdownMenuTrigger asChild>
           <Button variant='outline' className='capitalize'>
             Platform -{' '}
-            {selectedPlatform.length === 0 ? 'All' : selectedPlatform.length}
+            {filters.platforms.length === 0 ? 'All' : filters.platforms.length}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           {platforms.map((platform, index) => (
             <DropdownMenuCheckboxItem
               key={`platformFilterOption-${index}`}
-              checked={selectedCountries.includes(platform)}
+              checked={filters.platforms.includes(platform)}
               className='capitalize'
               onClick={() =>
-                selectedPlatform.includes(platform)
-                  ? setSelectedPlatform((prevState) => [
-                      ...prevState.filter(
-                        (selectedPlatform) => selectedPlatform !== platform
-                      )
-                    ])
-                  : setSelectedPlatform((prevState) => [...prevState, platform])
+                filters.platforms.includes(platform)
+                  ? setFilters(
+                      'platforms',
+                      filters.platforms.filter((p) => p !== platform)
+                    )
+                  : setFilters('platforms', [...filters.platforms, platform])
               }
             >
               {platform}
@@ -97,23 +118,22 @@ export const FilterRow = () => {
         <DropdownMenuTrigger asChild>
           <Button variant='outline' className='capitalize'>
             Countries -{' '}
-            {selectedCountries.length === 0 ? 'All' : selectedCountries.length}
+            {filters.countries.length === 0 ? 'All' : filters.countries.length}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           {countries.map((country, index) => (
             <DropdownMenuCheckboxItem
               key={`countryFilterOption-${index}`}
-              checked={selectedCountries.includes(country)}
+              checked={filters.countries.includes(country)}
               className='capitalize'
               onClick={() =>
-                selectedCountries.includes(country)
-                  ? setSelectedCountries((prevState) => [
-                      ...prevState.filter(
-                        (selectedCountry) => selectedCountry !== country
-                      )
-                    ])
-                  : setSelectedCountries((prevState) => [...prevState, country])
+                filters.countries.includes(country)
+                  ? setFilters(
+                      'countries',
+                      filters.countries.filter((c) => c !== country)
+                    )
+                  : setFilters('countries', [...filters.countries, country])
               }
             >
               {country}

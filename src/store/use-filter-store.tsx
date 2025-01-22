@@ -1,32 +1,42 @@
 import { create } from 'zustand';
 
-type PlatformFilter = 'all' | 'ios' | 'android';
-type DateFilter = { from?: string; to?: string };
-type CountryFilter = 'turkey' | 'unitedStates' | 'brazil' | 'india';
+import { platforms, countries } from '@/lib/constants';
 
-type ViewStateStore = {
+type FilterStore = {
   filters: {
-    platform: PlatformFilter;
-    date: DateFilter;
-    country: CountryFilter;
+    date: { from: string | undefined; to: string | undefined };
+    platforms: (typeof platforms)[number][];
+    countries: (typeof countries)[number][];
   };
-  updateFiltersState: (
-    field: 'platform' | 'date' | 'country',
-    newState: PlatformFilter | DateFilter | CountryFilter
+  setFilters: (
+    field: 'date' | 'platforms' | 'countries',
+    newState:
+      | (typeof platforms)[number][]
+      | (typeof countries)[number][]
+      | { from: string | undefined; to: string | undefined }
   ) => void;
+  resetFilters: () => void;
 };
 
-export const useViewStateStore = create<ViewStateStore>()((set) => ({
+export const useFilterStore = create<FilterStore>()((set) => ({
   filters: {
-    platform: 'all',
-    date: {},
-    country: 'turkey'
+    platforms: [],
+    date: { from: undefined, to: undefined },
+    countries: []
   },
-  updateFiltersState: (field, newState) =>
+  setFilters: (field, newState) =>
     set((state) => ({
       filters: {
         ...state.filters,
         [field]: newState
       }
-    }))
+    })),
+  resetFilters: () =>
+    set({
+      filters: {
+        platforms: [],
+        date: { from: undefined, to: undefined },
+        countries: []
+      }
+    })
 }));
