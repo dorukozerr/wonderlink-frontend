@@ -17,6 +17,16 @@ type ViewStateStore = {
 };
 
 export const useViewStateStore = create<ViewStateStore>()((set) => ({
-  viewState: '',
-  changeViewState: (newState) => set({ viewState: newState })
+  filters: {
+    platform: 'all',
+    date: {},
+    country: 'turkey'
+  },
+  updateFiltersState: (field, newState) =>
+    set((state) => ({
+      filters: {
+        ...state.filters,
+        [field]: newState
+      }
+    }))
 }));
