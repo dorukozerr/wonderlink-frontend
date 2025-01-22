@@ -2,22 +2,33 @@ import { ResponsiveFunnel } from '@nivo/funnel';
 
 import { trpc } from '@/utils/trpc';
 import { useFilterStore } from '@/store/use-filter-store';
+import { Button } from '@/components/ui/button';
 
 export const Retention = () => {
   const filters = useFilterStore((state) => state.filters);
 
-  const { data, isFetching } =
-    trpc.analytics.retentionMetrics.useQuery(filters);
+  const { data, isFetching, isError, error, refetch } =
+    trpc.analytics.retentionMetrics.useQuery(filters, {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: false
+    });
 
   return (
-    <div className='flex h-full w-full flex-col items-center justify-center p-4'>
+    <div className='flex h-full w-full flex-col items-center justify-center gap-4 p-4'>
       {isFetching ? (
         'Loading...'
-      ) : data ? (
+      ) : isError || !data ? (
+        <>
+          <h3 className='text-2xl font-bold'>Server Error</h3>
+          <h5 className='tet-lg text-muted-foreground'>{error?.message}</h5>
+          <Button onClick={() => refetch()}>Retry</Button>
+        </>
+      ) : (
         <ResponsiveFunnel
           data={data}
           margin={{ top: 0, left: 10, right: 10, bottom: 0 }}
-          valueFormat='>-.4s'
+          valueFormat='>-.2s'
           colors={{ scheme: 'nivo' }}
           borderWidth={20}
           labelColor={{
@@ -38,8 +49,6 @@ export const Retention = () => {
           enableAfterSeparators={false}
           enableBeforeSeparators={false}
         />
-      ) : (
-        'There was a error'
       )}
     </div>
   );
