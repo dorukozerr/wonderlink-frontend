@@ -24,7 +24,10 @@ export const Header = () => {
           key={`viewStateLink-${index}`}
           variant={viewState === state ? 'default' : 'outline'}
           className='hidden capitalize lg:flex'
-          onClick={() => changeViewState(state as ViewState)}
+          onClick={() => {
+            resetFilters();
+            changeViewState(state as ViewState);
+          }}
         >
           {state.replace(/([A-Z])/g, ' $1').trim()}
         </Button>
@@ -41,8 +44,8 @@ export const Header = () => {
               key={`platformFilterOption-${index}`}
               className='capitalize'
               onClick={() => {
-                changeViewState(state as ViewState);
                 resetFilters();
+                changeViewState(state as ViewState);
               }}
             >
               {state.replace(/([A-Z])/g, ' $1').trim()}

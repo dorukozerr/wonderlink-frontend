@@ -18,12 +18,14 @@ type FilterStore = {
   resetFilters: () => void;
 };
 
+const initialState = {
+  date: { from: undefined, to: undefined },
+  platforms: [],
+  countries: []
+};
+
 export const useFilterStore = create<FilterStore>()((set) => ({
-  filters: {
-    platforms: [],
-    date: { from: undefined, to: undefined },
-    countries: []
-  },
+  filters: initialState,
   setFilters: (field, newState) =>
     set((state) => ({
       filters: {
@@ -31,12 +33,5 @@ export const useFilterStore = create<FilterStore>()((set) => ({
         [field]: newState
       }
     })),
-  resetFilters: () =>
-    set({
-      filters: {
-        platforms: [],
-        date: { from: undefined, to: undefined },
-        countries: []
-      }
-    })
+  resetFilters: () => set({ filters: initialState })
 }));
