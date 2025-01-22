@@ -1,3 +1,5 @@
+export const themeOptions = ['dark', 'light', 'system'] as const;
+
 export const viewStates = [
   'consecutive',
   'country',
