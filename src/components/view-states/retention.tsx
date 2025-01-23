@@ -40,6 +40,11 @@ export const Retention = () => {
             <div className='flex flex-col items-start justify-start gap-4 rounded-lg border border-border bg-card p-4'>
               <h5>{part.data.label}</h5>
               <span>{part.data.value.toLocaleString()}</span>
+              {part.data.ratio ? (
+                <span className='text-muted-foreground'>
+                  Total Users Ratio - {part.data.ratio}%
+                </span>
+              ) : null}
             </div>
           )}
           currentPartSizeExtension={20}
