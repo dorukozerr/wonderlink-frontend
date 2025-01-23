@@ -1,19 +1,17 @@
 import { create } from 'zustand';
 
-import { platforms, countries } from '@/lib/constants';
-
 type FilterStore = {
+  platforms: string[];
+  countries: string[];
   filters: {
     date: { from: string | undefined; to: string | undefined };
-    platforms: (typeof platforms)[number][];
-    countries: (typeof countries)[number][];
+    platforms: string[];
+    countries: string[];
   };
+  setOptions: (option: 'platforms' | 'countries', data: string[]) => void;
   setFilters: (
     field: 'date' | 'platforms' | 'countries',
-    newState:
-      | (typeof platforms)[number][]
-      | (typeof countries)[number][]
-      | { from: string | undefined; to: string | undefined }
+    newState: string[] | { from: string | undefined; to: string | undefined }
   ) => void;
   resetFilters: () => void;
 };
@@ -25,6 +23,9 @@ const initialState = {
 };
 
 export const useFilterStore = create<FilterStore>()((set) => ({
+  platforms: [],
+  countries: [],
+  setOptions: (option, data) => set((state) => ({ ...state, [option]: data })),
   filters: initialState,
   setFilters: (field, newState) =>
     set((state) => ({

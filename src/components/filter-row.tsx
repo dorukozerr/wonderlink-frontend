@@ -1,6 +1,5 @@
 import { Calendar as CalendarIcon, Filter } from 'lucide-react';
 
-import { platforms, countries } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useFilterStore } from '@/store/use-filter-store';
 import { Button } from '@/components/ui/button';
@@ -25,7 +24,9 @@ import {
 } from '@/components/ui/popover';
 
 export const FilterRow = () => {
-  const { filters, setFilters } = useFilterStore();
+  const { countries, platforms, filters, setFilters } = useFilterStore();
+
+  console.log(JSON.stringify(filters, null, 2));
 
   return (
     <div className='flex h-max w-full items-center justify-end gap-2 border-b border-border p-4'>
@@ -130,7 +131,10 @@ export const FilterRow = () => {
             {filters.countries.length === 0 ? 'All' : filters.countries.length}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent
+          align='end'
+          className='max-h-[500px] overflow-auto'
+        >
           {countries.map((country, index) => (
             <DropdownMenuCheckboxItem
               key={`countryFilterOption-${index}`}

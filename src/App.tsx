@@ -6,7 +6,9 @@
 // - Daily usage statistics => Calendar
 // - Country statistics => Tree Map
 
+import { trpc } from '@/utils/trpc';
 import { useViewStateStore } from '@/store/use-view-state-store';
+import { useFilterStore } from '@/store/use-filter-store';
 import { FilterRow } from '@/components/filter-row';
 import { Consecutive } from '@/components/view-states/consecutive';
 import { Country } from '@/components/view-states/country';
@@ -16,6 +18,17 @@ import { Retention } from '@/components/view-states/retention';
 
 export const App = () => {
   const { viewState } = useViewStateStore();
+  const setOptions = useFilterStore((state) => state.setOptions);
+
+  trpc['filter-fields'].getUniqueFilters.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: false,
+    onSuccess: (data) => {
+      setOptions('platforms', data.platforms);
+      setOptions('countries', data.countries);
+    }
+  });
 
   const viewStates = {
     consecutive: <Consecutive />,
