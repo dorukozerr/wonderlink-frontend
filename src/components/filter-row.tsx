@@ -26,8 +26,6 @@ import {
 export const FilterRow = () => {
   const { countries, platforms, filters, setFilters } = useFilterStore();
 
-  console.log(JSON.stringify(filters, null, 2));
-
   return (
     <div className='flex h-max w-full items-center justify-end gap-2 border-b border-border p-4'>
       <h6 className='block font-bold md:hidden'>Filters</h6>
