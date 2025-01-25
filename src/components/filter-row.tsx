@@ -24,7 +24,16 @@ import {
 } from '@/components/ui/popover';
 
 export const FilterRow = () => {
-  const { countries, platforms, filters, setFilters } = useFilterStore();
+  const { countries, platforms, dateRange, filters, setFilters } =
+    useFilterStore();
+
+  const isDateBetween = (date: Date, start: Date, end: Date) => {
+    const normalized = new Date(date.setHours(0, 0, 0, 0));
+    return (
+      normalized >= new Date(start.setHours(0, 0, 0, 0)) &&
+      normalized <= new Date(end.setHours(0, 0, 0, 0))
+    );
+  };
 
   return (
     <div className='flex h-max w-full items-center justify-end gap-2 border-b border-border p-4'>
@@ -59,7 +68,6 @@ export const FilterRow = () => {
           <Calendar
             initialFocus
             mode='range'
-            defaultMonth={new Date()}
             selected={
               filters.date.from
                 ? filters.date.to
@@ -92,6 +100,20 @@ export const FilterRow = () => {
                   })
             }
             numberOfMonths={2}
+            disabled={(date) =>
+              dateRange.earliestDate && dateRange.latestDate
+                ? !isDateBetween(
+                    date,
+                    new Date(dateRange.earliestDate),
+                    new Date(dateRange.latestDate)
+                  )
+                : false
+            }
+            defaultMonth={
+              dateRange.earliestDate
+                ? new Date(dateRange.earliestDate)
+                : new Date()
+            }
           />
         </PopoverContent>
       </Popover>
@@ -183,7 +205,20 @@ export const FilterRow = () => {
                   <Calendar
                     initialFocus
                     mode='range'
-                    defaultMonth={new Date()}
+                    disabled={(date) =>
+                      dateRange.earliestDate && dateRange.latestDate
+                        ? !isDateBetween(
+                            date,
+                            new Date(dateRange.earliestDate),
+                            new Date(dateRange.latestDate)
+                          )
+                        : false
+                    }
+                    defaultMonth={
+                      dateRange.earliestDate
+                        ? new Date(dateRange.earliestDate)
+                        : new Date()
+                    }
                     selected={
                       filters.date.from
                         ? filters.date.to
