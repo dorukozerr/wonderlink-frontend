@@ -7,15 +7,17 @@ import { ThemeProvider } from '@/components/theme-provider.tsx';
 import { Layout } from '@/components/layout';
 import { App } from '@/App.tsx';
 
+const WONDERLINK_BACKEND_URL = import.meta.env.VITE_WONDERLINK_BACKEND_URL;
+
+if (!WONDERLINK_BACKEND_URL) {
+  throw new Error('env vars are not defined');
+}
+
 export const Providers = () => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [
-        httpBatchLink({
-          url: 'http://localhost:4732'
-        })
-      ]
+      links: [httpBatchLink({ url: WONDERLINK_BACKEND_URL })]
     })
   );
 

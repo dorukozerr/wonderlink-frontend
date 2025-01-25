@@ -29,6 +29,7 @@ export const FilterRow = () => {
 
   const isDateBetween = (date: Date, start: Date, end: Date) => {
     const normalized = new Date(date.setHours(0, 0, 0, 0));
+
     return (
       normalized >= new Date(start.setHours(0, 0, 0, 0)) &&
       normalized <= new Date(end.setHours(0, 0, 0, 0))
